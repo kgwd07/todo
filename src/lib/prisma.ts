@@ -1,6 +1,12 @@
 // lib/prisma.ts
 import { PrismaClient } from "@prisma/client";
 
+// Add this to extend the global type
+declare global {
+  // eslint-disable-next-line no-var
+  var prisma: PrismaClient | undefined;
+}
+
 const prismaClientSingleton = () => {
   return new PrismaClient({
     log: ['query', 'error', 'warn'],
@@ -9,14 +15,10 @@ const prismaClientSingleton = () => {
         url: process.env.DATABASE_URL,
       },
     },
-    // Remove the incorrect connection property
   });
 };
 
-declare global {
-  var prisma: PrismaClient | undefined;
-}
+// Use global instead of globalThis
+export const prisma = global.prisma || prismaClientSingleton();
 
-export const prisma = globalThis.prisma || prismaClientSingleton();
-
-if (process.env.NODE_ENV !== "production") globalThis.prisma = prisma;
+if (process.env.NODE_ENV !== "production") global.prisma = prisma;
