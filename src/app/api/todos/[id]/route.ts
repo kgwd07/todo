@@ -4,10 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 
-export async function PATCH(
-  request: NextRequest,
-  context: { params: { id: string } }
-) {
+export async function PATCH(request, context) {
   try {
     const { userId } = await auth();
     
@@ -44,10 +41,7 @@ export async function PATCH(
   }
 }
 
-export async function DELETE(
-  request: NextRequest,
-  context: { params: { id: string } }
-) {
+export async function DELETE(request, context) {
   try {
     const { userId } = await auth();
     
