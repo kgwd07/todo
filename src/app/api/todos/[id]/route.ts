@@ -3,10 +3,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 
-// Change the parameter structure to use proper types
+// Define the correct type for the context parameter
+type RouteContext = {
+  params: {
+    id: string;
+  };
+};
+
 export async function PATCH(
   request: NextRequest,
-  context: { params: { id: string } }
+  context: RouteContext
 ) {
   try {
     const { userId } = await auth();
@@ -15,10 +21,9 @@ export async function PATCH(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     
-    const { id } = context.params;
+    const id = context.params.id;
     const { completed, title } = await request.json();
     
-    // Rest of the code remains the same
     const todo = await prisma.todo.findUnique({
       where: { id },
     });
@@ -45,10 +50,9 @@ export async function PATCH(
   }
 }
 
-// Also update the DELETE handler
 export async function DELETE(
   request: NextRequest,
-  context: { params: { id: string } }
+  context: RouteContext
 ) {
   try {
     const { userId } = await auth();
@@ -57,7 +61,7 @@ export async function DELETE(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     
-    const { id } = context.params;
+    const id = context.params.id;
     
     const todo = await prisma.todo.findUnique({
       where: { id },
