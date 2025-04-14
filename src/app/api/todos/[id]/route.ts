@@ -1,18 +1,11 @@
-// src/app/api/todos/[id]/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 
-// Define the correct type for the context parameter
-type RouteContext = {
-  params: {
-    id: string;
-  };
-};
-
+// Change the context type to match Next.js's expected structure
 export async function PATCH(
   request: NextRequest,
-  context: RouteContext
+  { params }: { params: { id: string } }
 ) {
   try {
     const { userId } = await auth();
@@ -21,7 +14,7 @@ export async function PATCH(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     
-    const id = context.params.id;
+    const id = params.id;
     const { completed, title } = await request.json();
     
     const todo = await prisma.todo.findUnique({
@@ -52,7 +45,7 @@ export async function PATCH(
 
 export async function DELETE(
   request: NextRequest,
-  context: RouteContext
+  { params }: { params: { id: string } }
 ) {
   try {
     const { userId } = await auth();
@@ -61,7 +54,7 @@ export async function DELETE(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     
-    const id = context.params.id;
+    const id = params.id;
     
     const todo = await prisma.todo.findUnique({
       where: { id },
