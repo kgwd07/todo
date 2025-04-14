@@ -1,6 +1,9 @@
 // components/layout/navbar.tsx
 import Link from "next/link";
-import { UserButton, SignInButton, SignUpButton } from "@clerk/nextjs";
+import { UserButton,
+  //  SignInButton,
+  //   SignUpButton
+   } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
 
 export default async function Navbar() {
