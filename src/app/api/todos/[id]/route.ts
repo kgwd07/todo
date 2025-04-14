@@ -3,9 +3,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 
+// Change the parameter structure to use proper types
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   try {
     const { userId } = await auth();
@@ -14,14 +15,12 @@ export async function PATCH(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     
-    const { id } = params;
+    const { id } = context.params;
     const { completed, title } = await request.json();
     
-    // Ensure the todo belongs to the user
+    // Rest of the code remains the same
     const todo = await prisma.todo.findUnique({
-      where: {
-        id,
-      },
+      where: { id },
     });
     
     if (!todo || todo.userId !== userId) {
@@ -29,9 +28,7 @@ export async function PATCH(
     }
     
     const updatedTodo = await prisma.todo.update({
-      where: {
-        id,
-      },
+      where: { id },
       data: {
         ...(completed !== undefined && { completed }),
         ...(title !== undefined && { title }),
@@ -48,10 +45,10 @@ export async function PATCH(
   }
 }
 
-// Fixed DELETE handler
+// Also update the DELETE handler
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   try {
     const { userId } = await auth();
@@ -60,13 +57,10 @@ export async function DELETE(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     
-    const { id } = params;
+    const { id } = context.params;
     
-    // Ensure the todo belongs to the user
     const todo = await prisma.todo.findUnique({
-      where: {
-        id,
-      },
+      where: { id },
     });
     
     if (!todo || todo.userId !== userId) {
@@ -74,9 +68,7 @@ export async function DELETE(
     }
     
     await prisma.todo.delete({
-      where: {
-        id,
-      },
+      where: { id },
     });
     
     return NextResponse.json({ success: true });
