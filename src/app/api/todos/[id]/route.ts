@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 
-// Change the context type to match Next.js's expected structure
+// Use the correct param pattern for App Router
 export async function PATCH(
   request: NextRequest,
   { params }: { params: { id: string } }
